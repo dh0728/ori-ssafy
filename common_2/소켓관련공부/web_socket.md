@@ -174,3 +174,5 @@ WebSocket의 데이터 교환에서 사용되는 가장 작은 단위의 데이�
 <a href="https://jjongbin.tistory.com/entry/Web-Socket-%EC%86%8C%EC%BC%93">[Web] Socket, WebSocket (소켓과 웹소켓)</a>
 <a href="https://yuricoding.tistory.com/134">웹소켓 개념과 원리</a>
 
+### 추가적으로 보면 좋은 자료
+<a href="https://velog.io/@jay/software-architecture-chat">채팅 시스템 설계</a>
