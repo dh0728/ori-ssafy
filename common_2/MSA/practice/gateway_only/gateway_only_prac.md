@@ -237,6 +237,11 @@ spring:
 ### 4. Gateway Route 노출
 - 필요에 따라 Gateway Route 적용 내용 전체를 확인할 수 있다.
 
+#### 의존성 추가
+```
+implementation 'org.springframework.boot:spring-boot-starter-actuator'
+```
+
 ```
 management:
   endpoints:
@@ -249,9 +254,15 @@ management:
       enabled: true  # default: true
 ```
 
+![alt text](image-1.png)
+
+
 ### 발생한 오류
 
 java.lang.IllegalArgumentException: Unable to find GatewayFilterFactory with name CustomFilter
+- customFilter을 못읽어오는 현상 발생
+- filter 폴더 위치가 이생했네.. ㅎㅎ 
+
 
 
 ### 참고 자료
