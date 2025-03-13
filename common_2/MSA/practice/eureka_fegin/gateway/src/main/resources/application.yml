@@ -6,7 +6,7 @@ spring:
     gateway:
       routes:
         # route 1, route의 id는 sample-internal
-        - id: funding
+        - id: funding-service
           # uri: http://localhost:8081/
           uri: lb://funding-service
           predicates:
