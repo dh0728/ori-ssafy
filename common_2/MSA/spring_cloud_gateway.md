@@ -148,13 +148,6 @@ spring:
             - RewritePath=/sample/(?<segment>.*), /$\{segment} # filter 로직 적용 (RewritePath 필터)
 ```
 
-
-
-## 🌐 Eureka
-
-![alt text](image-4.png)
-
-## 🌐 Feign Client
 <a href="https://velog.io/@mrcocoball2/Spring-Cloud-Spring-Cloud-Gateway-%EA%B8%B0%EB%B3%B8-%EA%B0%9C%EB%85%90">[Spring Cloud] Spring Cloud Gateway - 기본 개념</a>
 <a href="https://techblog.lotteon.com/%EB%89%B4%EC%98%A8%EC%9D%B4%EB%93%A4%EC%9D%98-%EC%B2%AB-msa-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%8F%84%EC%A0%84%EA%B8%B0-d336186a7e31">신입사원 개발 정복기 #2. KOKODO의 첫 MSA 서비스 도전기</a>
 <a href="https://www.samsungsds.com/kr/insights/msa_and_netflix.html">넷플릭스로 알아보는 MSA</a>

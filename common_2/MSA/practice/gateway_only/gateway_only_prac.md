@@ -139,6 +139,10 @@ public class CustomFilter extends AbstractGatewayFilterFactory<CustomFilter.Conf
 }
 
 ```
+- Custom Filter를 적용하기 위해서는 AbstractGatewayFilterFactory<C> 추상 클래스를 상속받는 클래스를 생성해야 함.
+- 이때 실제 필터가 동작하는 apply() 메서드를 보면, 내부에서 동작하는 람다 함수의 첫 번째 매개변수로 ServerWebExchange 타입이 들어가고, 두 번째 매개변수로는 GatewayFilterChain이 들어가서 동작하게 되는데요.
+- 주의해야 할 점은 이후 사용되는 request, response가 ServletRequest, ServletResponse가 아니라 Spring Reactive의 ServerHttpRequest, Response라는 점입니다.
+
 
 - 커스텀 필터를 적용하려면 yml에 아래 코드 처럼 filters로 추가 해준다.
 ```
@@ -155,7 +159,7 @@ spring:
 ```
 
 
-1. GlobalFilter Filter
+2. GlobalFilter Filter
 
 ```
 package com.gateway.filter;
