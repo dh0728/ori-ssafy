@@ -1,0 +1,25 @@
+server:
+  port: 8761  # Eureka ?? ??
+
+spring:
+  application:
+    name: test-eureka-local
+  config:
+    activate:
+      on-profile: local
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  server:
+    enable-self-preservation: true
+  client:
+    register-with-eureka: false  # ?? ??? Eureka? ???? ??
+    fetch-registry: false  # ? ??? ??? ???? ?? (Eureka ????? ?? false?? ?!)
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

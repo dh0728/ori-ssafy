@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+# 각 마이크로서비스 공통 사항
+spring:
+  application:
+    name: funding-service
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    leaseRenewalIntervalInSeconds: 10
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
