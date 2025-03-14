@@ -1,6 +1,9 @@
 server:
   port: 8761
 
+spring:
+  application:
+    name: test-eureka-local
 
 eureka:
   client:
@@ -14,3 +17,7 @@ eureka:
     renewal-percent-threshold: 0.85
   instance:
     lease-renewal-interval-in-seconds: 15
+
+
+
+

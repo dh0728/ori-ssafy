@@ -148,6 +148,49 @@ spring:
             - RewritePath=/sample/(?<segment>.*), /$\{segment} # filter 로직 적용 (RewritePath 필터)
 ```
 
+### HTTPS 적용시 Nginx와 Spring Cloud Gateway 둘중 어떤 걸 사용해야 할까??
+일단 Spring Cloud Gateway 단독 사용 (HTTPS 지원 가능)이 가능하다. <br>
+하지만 이 방법은 Spring Boot 서버에서 SSL/TLS를 직접 처리해야 하므로, 운영 환경에서는 권장되지 않아.
+또한 부하 분산이나 보안적인 이점이 부족해.<br>
+따라서 배포 환경에서는 **Nginx에서 HTTPS 처리 + 내부 Gateway는 HTTP 유지**하는 것을 권장한다고 한다.
+
+#### 📌 추천 아키텍처
+Nginx에서 HTTPS 적용
+- Nginx에서 SSL/TLS를 적용하여 HTTPS 트래픽을 처리
+-  Nginx → Spring Cloud Gateway로 프록싱
+- Spring Cloud Gateway는 HTTP(80)로 트래픽을 받고, 내부 서비스로 라우팅
+Spring Cloud Gateway는 API Gateway 역할에 집중
+- 라우팅, 인증/인가, 로깅, 트래픽 제어 등을 담당
+
+#### 같이 사용하는 것이 좋은 이유?
+1. 성능 최적화 및 부하 분산
+  - Spring Cloud Gateway는 애플리케이션 레벨에서 실행되며, 요청을 처리하는 데 추가적인 리소스를 사용함.
+  - 반면, Nginx는 네이티브 C 기반으로 동작하여 성능이 뛰어나고, 많은 요청을 가볍게 처리할 수 있음.
+  - 특히, Spring Cloud Gateway가 SSL 핸드셰이크를 직접 수행하면 CPU 부담이 커지므로, SSL Termination을 Nginx에서 처리하는 것이 효율적.
+
+2. SSL/TLS 종료(Termination)
+  - Nginx에서 SSL/TLS 종료(TLS Termination)를 수행하면 Spring Cloud Gateway는 내부에서 HTTP(80)로 통신할 수 있어 성능 이점을 얻을 수 있음.
+  - Spring Cloud Gateway에서 직접 SSL을 처리하면 Java의 Netty 기반 SSL 처리 방식으로 인해 추가적인 부하 발생.
+  - Nginx는 OpenSSL을 활용하여 더 빠르게 암호화를 처리할 수 있음.
+
+3. 로드 밸런싱 및 확장성
+  - Nginx는 기본적으로 로드 밸런서를 제공하므로 여러 개의 Spring Cloud Gateway 인스턴스에 요청을 분산 가능.
+  - Spring Cloud Gateway 단독으로는 추가적인 로드 밸런싱 설정이 필요하지만, Nginx를 사용하면 Upstream 설정으로 간단하게 해결 가능.
+
+4. 정적 리소스 처리 및 캐싱
+  - Spring Cloud Gateway는 API Gateway 역할에 집중해야 하지만, 단독으로 사용하면 정적 리소스(이미지, CSS, JS 등) 요청도 처리해야 함.
+  - Nginx를 사용하면 정적 파일은 Nginx에서 직접 제공하고, API 요청만 Spring Cloud Gateway로 전달할 수 있음.
+  - 또한, Reverse Proxy 캐싱 기능을 활용하여 API 응답을 캐싱할 수도 있음.
+
+5. 보안 및 방화벽 기능 강화
+  - Nginx는 fail2ban이나 mod_security 같은 보안 모듈과 연동하여 DDoS 방어 및 WAF(Web Application Firewall) 기능을 추가할 수 있음.
+  - Spring Cloud Gateway 단독으로는 방어 기능이 제한적이므로 Nginx에서 미리 필터링 후 Gateway로 전달하는 것이 보안 측면에서 유리함.
+
+6. Blue-Green 배포 및 무중단 배포 용이
+  - Nginx는 upstream을 변경하여 무중단 배포(Rolling Update) 를 쉽게 적용 가능.
+  - Spring Cloud Gateway 단독으로 무중단 배포를 적용하려면 복잡한 설정이 필요하지만, Nginx를 사용하면 트래픽을 새로운 인스턴스로 점진적으로 전환하는 것이 용이함.
+
+
 <a href="https://velog.io/@mrcocoball2/Spring-Cloud-Spring-Cloud-Gateway-%EA%B8%B0%EB%B3%B8-%EA%B0%9C%EB%85%90">[Spring Cloud] Spring Cloud Gateway - 기본 개념</a>
 <a href="https://techblog.lotteon.com/%EB%89%B4%EC%98%A8%EC%9D%B4%EB%93%A4%EC%9D%98-%EC%B2%AB-msa-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%8F%84%EC%A0%84%EA%B8%B0-d336186a7e31">신입사원 개발 정복기 #2. KOKODO의 첫 MSA 서비스 도전기</a>
 <a href="https://www.samsungsds.com/kr/insights/msa_and_netflix.html">넷플릭스로 알아보는 MSA</a>

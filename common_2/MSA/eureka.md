@@ -30,9 +30,6 @@
 - 레지스트리로부터 다른 Eureka Client의 서비스 정보를 확인할 수 있음
 
 
-
-
-
 <a href="https://velog.io/@mrcocoball2/Spring-Cloud-Spring-Cloud-Eureka-%EA%B8%B0%EB%B3%B8-%EA%B0%9C%EB%85%90-%EB%B0%8F-%ED%99%9C%EC%9A%A9-74mogeh0">[Spring Cloud] Spring Cloud Eureka - 기본 개념 및 활용</a>
 
 

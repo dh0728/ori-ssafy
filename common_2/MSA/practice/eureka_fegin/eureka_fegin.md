@@ -47,6 +47,7 @@ public class EurekaApplication {
 
 ### 🌐 4. application.yml 파일 수정
 
+#### 처음에 해본 yml 설정
 ```
 server:
   port: 8761
@@ -54,9 +55,9 @@ server:
 spring:
   application:
     name: test-eureka-local
-  config:
+  config: 
     activate:
-      on-profile: local
+      on-profile: local # 이거 있으면 오류남
 
 eureka:
   instance:
@@ -65,25 +66,56 @@ eureka:
     enable-self-preservation: true
   client:
     register-with-eureka: false # 자기 자신을 서비스로 등록하지 않음
-    fetch-registry: true # 마이크로서비스 인스턴스 목록을 로컬에 캐시할 것인지 여부. 서비스 탐색 등의 목적.
+    fetch-registry: false 
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8761/eureka/
+```
 
-management:
-  security:
-    enabled: false
+- 위에 코드를 작성하니 오류가 났다. 
+- 찾아보니 아래 설정이 문제였다.
+```
+config:
+    activate:
+      on-profile: local
+```
+- 찾아보니 Eureka 서버가 기본 프로파일(default)로 실행되면, 이 설정이 적용되지 않아서 Eureka 클라이언트가 Eureka 서버를 찾지 못할 가능성이 있다고 한다.
+- 프로파일 설정이 필요하다면 실행 시 --spring.profiles.active=local 옵션을 추가하고 아니면 지우자!!
 
-ribbon:
-  IsSecure: false
+#### 좀더 설정을 추가해서 수정한 yml 설정
+```
+server:
+  port: 8761
 
-security:
-  basic:
-    enabled: true
-  user:
-    name: user
-  password: secret
+spring:
+  application:
+    name: test-eureka-local
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    enable-self-preservation: true
+    renewal-percent-threshold: 0.85
+  instance:
+    lease-renewal-interval-in-seconds: 15
 
 ```
+**✔ wait-time-in-ms-when-sync-empty: 0**
+→ Eureka 서버가 처음 시작될 때, 서비스가 없는 경우 기다리지 않고 바로 동작하도록 설정.
+
+**✔ renewal-percent-threshold: 0.85**
+→ Eureka 서버가 "자기 보호 모드"에서 얼마나 많은 인스턴스를 허용할지 설정.
+→ 기본값(0.85)은 서버가 85% 이상의 서비스 등록 요청을 받지 못하면, 보호 모드가 활성화됨.
+
+**✔ lease-renewal-interval-in-seconds: 15**
+→ 서비스가 Eureka 서버에 자신이 살아있음을 알리는 주기를 15초로 설정.
+→ 기본값(30초)보다 짧게 설정하여 서비스 상태를 더 자주 업데이트할 수 있음.
+
+**🚀 두 번째 설정은 성능 최적화를 포함해서, Eureka 서버가 빠르게 응답하고 자기 보호 모드에서 안정적으로 동작하도록 설정을 추가했다.**
 
 ## 🚩 설정 : Spring Cloud Eureka Client 기본 세팅
 
