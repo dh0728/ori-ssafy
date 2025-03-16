@@ -1,0 +1,53 @@
+version: "3.8"
+
+networks:
+  eureka-network:  # ✅ 네트워크 정의
+    name: eureka-network # 이름 고정안하면 프로젝트폴더명_네트워크 이름 이렇게 생성됨
+
+services:
+  eureka-server:
+    image: eureka-server
+    container_name: eureka-container
+    ports:
+      - "8761:8761"
+    networks:
+      - eureka-network
+
+  funding-service:
+    image: funding-service
+    container_name: funding-service-container
+    ports:
+      - "8081:8081"
+    networks:
+      - eureka-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-container:8761/eureka/
+
+  funding-review-service:
+    image: funding-review-service
+    container_name: funding-review-service-container
+    ports:
+      - "8082:8082"
+    networks:
+      - eureka-network
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-container:8761/eureka/
+
+  gateway:
+    image: gateway
+    container_name: gateway-container
+    ports:
+      - "8080:8080"
+    networks:
+      - eureka-network
+    depends_on:
+      - eureka-server
+      - funding-service
+      - funding-review-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-container:8761/eureka/
+

@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: funding-service
+          # uri: http://localhost:8081/
+          uri: lb://funding-service
+          predicates:
+            - Path=/api/funding/**
+          filters:
+            - CustomFilter
+        - id: funding-review-service
+          #uri: http://localhost:8082/
+          uri: lb://funding-review-service
+          predicates:
+            - Path=/api/funding-review/**
+          filters:
+            - AddRequestHeader=second-request, second-request-header
+            - AddResponseHeader=second-response, second-response-header
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-container:8761/eureka/
+  instance:
+    prefer-ip-address: true  # ? IP ???? ??? ??
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "gateway"
+  endpoint:
+    gateway:
+      enabled: true  # default: true

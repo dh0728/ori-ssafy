@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="funding_review.funding_review.mapper.FundingReviewMapper">
+
+    <!-- 전체 펀딩 조회 -->
+    <select id="getAllFundingReview" resultType="funding_review.funding_review.model.FundingReview">
+        SELECT * FROM funding_review;
+    </select>
+
+    <!-- 특정 펀딩 조회 -->
+    <select id="getFundingReviewById" parameterType="int" resultType="funding_review.funding_review.model.FundingReview">
+        SELECT * FROM funding_review WHERE funding_review_id = #{fundingReviewId};
+    </select>
+
+</mapper>

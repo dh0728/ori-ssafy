@@ -211,5 +211,35 @@ public interface FundingClient {
 - 마찬가지로 의존성 주입 후, @EnableDiscoveryClient 어노테이션을 메인 클래스에 부착한 후 기존 application.yml을 수정합니다.
 
 ```
+server:
+  port: 8080
 
+spring:
+  cloud:
+    gateway:
+      routes:
+        # route 1, route의 id는 sample-internal
+        - id: funding-service
+          # uri: http://localhost:8081/
+          uri: lb://funding-service
+          predicates:
+            - Path=/funding/**
+          filters:
+            - CustomFilter
+        - id: products
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/products/**
+          filters:
+            - AddRequestHeader=second-request, second-request-header
+            - AddResponseHeader=second-response, second-response-header
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "gateway"
+  endpoint:
+    gateway:
+      enabled: true  # default: true
 ```
